@@ -105,4 +105,5 @@ message ChangeShardRoleResponse {
 
 message ShardLockValue {
   string node_name = 1;
+  bytes id = 2;
 }
