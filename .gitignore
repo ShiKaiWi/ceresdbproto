@@ -1,6 +1,7 @@
-**/target
-.idea/
+.idea
 .env
-**/.DS_Store
-**/.vscode
-src/
+.DS_Store
+.vscode
+
+target
+Cargo.lock

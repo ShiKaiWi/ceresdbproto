@@ -1,4 +1,21 @@
-// Copyright 2023 CeresDB Project Authors. Licensed under Apache-2.0.
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 // Manifest of engine
 syntax = "proto3";
@@ -44,6 +61,7 @@ message AddFileMeta {
   uint64 size = 5;
   uint64 row_num = 6;
   StorageFormat storage_format = 7;
+  repeated string associated_files = 8;
 }
 
 // Meta data of the file to delete
@@ -61,6 +79,7 @@ message VersionEditMeta {
   uint64 flushed_sequence = 3;
   repeated AddFileMeta files_to_add = 4;
   repeated DeleteFileMeta files_to_delete = 5;
+  uint64 max_file_id = 6;
 }
 
 // Meta data of schema update.
@@ -115,6 +134,7 @@ message TableOptions {
   // is still unknown.
   bool sampling_segment_duration = 11;
   StorageFormatHint storage_format_hint = 12;
+  LayeredMemtableOptions layered_memtable_options = 13;
 }
 
 enum UpdateMode {
@@ -124,7 +144,7 @@ enum UpdateMode {
 
 message StorageFormatHint {
   oneof hint {
-    // Auto means the storage format is automatically determined by CeresDB and
+    // Auto means the storage format is automatically determined by HoraeDB and
     // its value have no specific meaning.
     int32 auto = 1;
     StorageFormat specific = 2;
@@ -168,4 +188,11 @@ enum Compression {
   LZ4 = 1;
   SNAPPY = 2;
   ZSTD = 3;
+}
+
+message LayeredMemtableOptions {
+  uint64 mutable_segment_switch_threshold = 1;
+  // because bool's default value is false in pb,
+  // use `disable` here to make `enable` default true.
+  bool disable = 2;
 }
